@@ -12,6 +12,7 @@ var buttonNotes = [
 	];
 
 var buttonValueObj = [];
+var colorParameterObj = [];
 
 
 
@@ -52,19 +53,20 @@ function getButtonForNote(note) {
 }
 
 
+
+// ---- User Commands ----
+
 function resendColors()
 {
-	//FIXME
-	// local.parameters.colors.topButtons.map(moduleParameterChanged);
-	return;
-	// var colorContainers = local.parameters.colors;
-	// for (var container in colorContainers)
-	// {
-	// 	for (var param in container)
-	// 	{
-	// 		moduleParameterChanged(param);
-	// 	}
-	// }
+	for(var i=0; i<9; i++)
+	{
+		for(var j=0; j<9; j++)
+		{
+			var color = colorParameterObj[i][j].get();
+			setButtonColor([i,j], color);
+		}
+	}
+}
 
 	// return;
 	// for(var i=0; i<9; i++)
@@ -89,12 +91,17 @@ function init()
 	for (var i = 0; i < 9; i++) 
 	{
 		buttonValueObj[i] = [];
+		colorParameterObj[i] = [];
 	}
+
+	// Logo
+	colorParameterObj[0][8] = local.parameters.colors.logo.getChild("logo");
 
 	// Top Buttons
     for (var i = 0; i < 8; i++) 
 	{
         buttonValueObj[0][i] = local.values.getChild("Top Buttons").getChild("topButton" + (i + 1) + "");
+        colorParameterObj[0][i] = local.parameters.colors.getChild("Top Buttons").getChild("topButton" + (i + 1) + "");
     }
 
 	// Main Buttons
@@ -103,6 +110,7 @@ function init()
 		for (var j = 0; j < 8; j++) 
 		{
 			buttonValueObj[i+1][j] = local.values.getChild("Main Buttons").getChild("button" + (i + 1) + (j + 1) + "");
+			colorParameterObj[i+1][j] = local.parameters.colors.getChild("Main Buttons").getChild("button" + (i + 1) + (j + 1) + "");
 		}
     }
 
@@ -110,6 +118,7 @@ function init()
     for (var i = 0; i < 8; i++) 
 	{
         buttonValueObj[i+1][8] = local.values.getChild("Side Buttons").getChild("sideButton" + (i + 1));
+        colorParameterObj[i+1][8] = local.parameters.colors.getChild("Side Buttons").getChild("sideButton" + (i + 1));
     }
 
 	// Setup Mode and Colors

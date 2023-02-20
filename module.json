@@ -300,10 +300,17 @@
 		},
 
 
-		"Reset Pad Colors":
+		"Resend Colors":
 		{
 			"menu":"",
-			"callback":"resetColors"
+			"callback":"resendColors"
+		},
+
+
+		"Set Midi Mode":
+		{
+			"menu":"",
+			"callback":"setMidiMode"
 		}
 	}
 }
