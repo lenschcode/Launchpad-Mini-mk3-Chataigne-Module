@@ -55,7 +55,7 @@ function getButtonForNote(note) {
 function resendColors()
 {
 	//FIXME
-	local.parameters.colors.topButtons.map(moduleParameterChanged);
+	// local.parameters.colors.topButtons.map(moduleParameterChanged);
 	return;
 	// var colorContainers = local.parameters.colors;
 	// for (var container in colorContainers)
