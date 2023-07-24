@@ -13,6 +13,12 @@ var buttonNotes = [
 
 var buttonValueObj = [];
 var colorParameterObj = [];
+var pulsingParameterObj = [];
+
+var pulsingSteps = 128;
+var pulsingTable = [0, 13, 26, 40, 53, 67, 80, 93, 107, 120, 134, 147, 161, 174, 187, 201, 214, 228, 255, 255, 252, 250, 247, 245, 243, 240, 238, 236, 233, 231, 229, 226, 224, 222, 219, 217, 215, 212, 210, 208, 205, 203, 201, 198, 196, 194, 191, 189, 187, 184, 182, 180, 177, 175, 173, 170, 168, 166, 163, 161, 159, 156, 154, 152, 149, 147, 145, 142, 140, 138, 135, 133, 131, 128, 126, 123, 121, 119, 116, 114, 112, 109, 107, 105, 102, 100, 98, 95, 93, 91, 88, 86, 84, 81, 79, 77, 74, 72, 70, 67, 65, 63, 60, 58, 56, 53, 51, 49, 46, 44, 42, 39, 37, 35, 32, 30, 28, 25, 23, 21, 18, 16, 14, 11, 9, 7, 4, 0];
+var pulsingRate = 1.0;
+var previousStep = -1;
 
 
 
@@ -25,15 +31,29 @@ function setMidiMode()
 }
 
 
+function setButtonColorBrightness(id, color, brightness)
+{
+	var note = buttonNotes[id[0]][id[1]];
+
+					// newColor[1] = Math.round((color[1] * intensity) / 255);
+	var r = Math.round(((color[0] * 127) * brightness) / 255);
+	var g = Math.round(((color[1] * 127) * brightness) / 255);
+	var b = Math.round(((color[2] * 127) * brightness) / 255);
+
+	script.log("Set Color for note " + note + " to rgb:{"+r+","+g+","+b+"} Intensity: "+brightness);
+	local.sendSysex(0x00, 0x20, 0x29, 0x02, 0x0D, 0x03, 0x03, note, r, g, b);
+}
+
+
 function setButtonColor(id, color)
 {
-	var index = buttonNotes[id[0]][id[1]];
+	var note = buttonNotes[id[0]][id[1]];
 	var r = Math.round(color[0] * 127);
 	var g = Math.round(color[1] * 127);
 	var b = Math.round(color[2] * 127);
 
-	script.log("Set Color for note "+index+" to rgb:{"+r+","+g+","+b+"}");
-	local.sendSysex(0x00, 0x20, 0x29, 0x02, 0x0D, 0x03, 0x03, index, r, g, b);
+	script.log("Set Color for note " + note + " to rgb:{"+r+","+g+","+b+"}");
+	local.sendSysex(0x00, 0x20, 0x29, 0x02, 0x0D, 0x03, 0x03, note, r, g, b);
 }
 
 
@@ -45,11 +65,34 @@ function getButtonForNote(note) {
 	{
 		if (buttonNotes[i].contains(note))
 		{
-			return buttonValueObj[i][(buttonNotes[i].indexOf(note))]; //+1
+			return buttonValueObj[i][(buttonNotes[i].indexOf(note))];
 		}
 	}
 	return null;
-    // if (buttonNotes.contains(note)) return buttonValueObj[buttonNotes.indexOf(note)];
+}
+
+
+function getColorParameterForNote(note) {
+	for (var i = 0; i < 9; i++)
+	{
+		if (buttonNotes[i].contains(note))
+		{
+			return colorParameterObj[i][(buttonNotes[i].indexOf(note))];
+		}
+	}
+	return null;
+}
+
+
+function getPulsingParameterForNote(note) {
+	for (var i = 0; i < 9; i++)
+	{
+		if (buttonNotes[i].contains(note))
+		{
+			return pulsingParameterObj[i][(buttonNotes[i].indexOf(note))];
+		}
+	}
+	return null;
 }
 
 
@@ -68,18 +111,30 @@ function resendColors()
 	}
 }
 
-	// return;
-	// for(var i=0; i<9; i++)
-	// {
-	// 	for(var j=0; j<9; j++)
-	// 	{
-	// 		colorPararm = 
-	// 		setButtonColor()
-	// 	}
-	// }
+
+function setColor(button, color)
+{
+	button.set(color);
 }
 
 
+function setColorByNote(note, color, pulsing)
+{
+	var colorObj = getColorParameterForNote(note);
+	var pulsingObj = getPulsingParameterForNote(note);
+
+	if (!!colorObj)
+	{
+		colorObj.set(color);
+	}
+
+	if (!!pulsingObj)
+	{
+		pulsingObj.set(pulsing);
+	}
+
+	script.log("Set Button with Note "+note+" to color "); //TODO
+}
 
 // ---- Module Common Functions ----
 
@@ -92,16 +147,19 @@ function init()
 	{
 		buttonValueObj[i] = [];
 		colorParameterObj[i] = [];
+		pulsingParameterObj[i] = [];
 	}
 
 	// Logo
 	colorParameterObj[0][8] = local.parameters.colors.logo.getChild("logo");
+	pulsingParameterObj[0][8] = local.parameters.pulsing.logo.getChild("logo");
 
 	// Top Buttons
     for (var i = 0; i < 8; i++) 
 	{
         buttonValueObj[0][i] = local.values.getChild("Top Buttons").getChild("topButton" + (i + 1) + "");
         colorParameterObj[0][i] = local.parameters.colors.getChild("Top Buttons").getChild("topButton" + (i + 1) + "");
+        pulsingParameterObj[0][i] = local.parameters.pulsing.getChild("Top Buttons").getChild("topButton" + (i + 1) + "");
     }
 
 	// Main Buttons
@@ -111,6 +169,7 @@ function init()
 		{
 			buttonValueObj[i+1][j] = local.values.getChild("Main Buttons").getChild("button" + (i + 1) + (j + 1) + "");
 			colorParameterObj[i+1][j] = local.parameters.colors.getChild("Main Buttons").getChild("button" + (i + 1) + (j + 1) + "");
+			pulsingParameterObj[i+1][j] = local.parameters.pulsing.getChild("Main Buttons").getChild("button" + (i + 1) + (j + 1) + "");
 		}
     }
 
@@ -119,12 +178,46 @@ function init()
 	{
         buttonValueObj[i+1][8] = local.values.getChild("Side Buttons").getChild("sideButton" + (i + 1));
         colorParameterObj[i+1][8] = local.parameters.colors.getChild("Side Buttons").getChild("sideButton" + (i + 1));
+        pulsingParameterObj[i+1][8] = local.parameters.pulsing.getChild("Side Buttons").getChild("sideButton" + (i + 1));
     }
 
 	// Setup Mode and Colors
 	setMidiMode();
 	resendColors();
 }
+
+
+
+function update(delta)
+{
+	var time = util.getTime(); // time in seconds
+	var step = Math.round(((time % pulsingRate) / pulsingRate) * pulsingSteps);
+
+	if (step !== previousStep)
+	{
+		var intensity = pulsingTable[step];
+		script.log("Step: "+step+" intensity: "+intensity);
+
+		for (var i = 0; i < 9; i ++)
+		{
+			for (var j = 0; j < 9; j ++)
+			{
+				if (pulsingParameterObj[i][j].get())
+				{
+					// scale color with intensity
+					var color = colorParameterObj[i][j].get();
+					// newColor[0] = Math.round((parseInt(color[0]) * intensity) / 255);
+					// script.log("R: "+ parseInt(color[0]));
+					// newColor[1] = Math.round((color[1] * intensity) / 255);
+					// newColor[2] = Math.round((color[2] * intensity) / 255);
+					setButtonColorBrightness([i,j], color, intensity);
+				}
+			}
+		}
+	}
+	previousStep = step;
+}
+
 
 
 function moduleParameterChanged(param)
@@ -168,6 +261,36 @@ function moduleParameterChanged(param)
 		{
 			var id = [parseInt(param.name.charAt(10)), 8];
 			setButtonColor(id, color);
+		}
+	}
+
+	// Pulsing
+	if(param.getParent().getParent().name == "pulsing")
+	{
+		// if pulsing just got turned of send pull brightness color again
+		if (!param.get()){
+			var color = param.get();
+
+			if(param.name == "logo")
+			{
+				var id = [0, 8];
+				setButtonColor(id, color);
+			}
+			else if(param.getParent().name == "topButtons")
+			{
+				var id = [0, (parseInt(param.name.charAt(9))-1)];
+				setButtonColor(id, color);
+			}
+			else if(param.getParent().name == "mainButtons")
+			{
+				var id = [(parseInt(param.name.charAt(6))), (parseInt(param.name.charAt(7))-1)];
+				setButtonColor(id, color);
+			}
+			else if(param.getParent().name == "sideButtons")
+			{
+				var id = [parseInt(param.name.charAt(10)), 8];
+				setButtonColor(id, color);
+			}
 		}
 	}
 }
