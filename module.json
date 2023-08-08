@@ -406,11 +406,97 @@
 					"type":"Enum",
 					"options":
 					{
+						"Logo":[0,8],
+						
 						"Top Button 1":[0,0],
 						"Top Button 2":[0,1],
 						"Top Button 3":[0,2],
 						"Top Button 4":[0,3],
-						"Main Button 1":[1,0]
+						"Top Button 5":[0,4],
+						"Top Button 6":[0,5],
+						"Top Button 7":[0,6],
+						"Top Button 8":[0,7],
+						
+						"Side Button 1":[1,8],
+						"Side Button 2":[2,8],
+						"Side Button 3":[3,8],
+						"Side Button 4":[4,8],
+						"Side Button 5":[5,8],
+						"Side Button 6":[6,8],
+						"Side Button 7":[7,8],
+						"Side Button 8":[8,8],
+						
+						"Button 1.1":[1,0],
+						"Button 1.2":[1,1],
+						"Button 1.3":[1,2],
+						"Button 1.4":[1,3],
+						"Button 1.5":[1,4],
+						"Button 1.6":[1,5],
+						"Button 1.7":[1,6],
+						"Button 1.8":[1,7],
+
+						"Button 2.1":[2,0],
+						"Button 2.2":[2,1],
+						"Button 2.3":[2,2],
+						"Button 2.4":[2,3],
+						"Button 2.5":[2,4],
+						"Button 2.6":[2,5],
+						"Button 2.7":[2,6],
+						"Button 2.8":[2,7],
+
+						"Button 3.1":[3,0],
+						"Button 3.2":[3,1],
+						"Button 3.3":[3,2],
+						"Button 3.4":[3,3],
+						"Button 3.5":[3,4],
+						"Button 3.6":[3,5],
+						"Button 3.7":[3,6],
+						"Button 3.8":[3,7],
+
+						"Button 4.1":[4,0],
+						"Button 4.2":[4,1],
+						"Button 4.3":[4,2],
+						"Button 4.4":[4,3],
+						"Button 4.5":[4,4],
+						"Button 4.6":[4,5],
+						"Button 4.7":[4,6],
+						"Button 4.8":[4,7],
+
+						"Button 5.1":[5,0],
+						"Button 5.2":[5,1],
+						"Button 5.3":[5,2],
+						"Button 5.4":[5,3],
+						"Button 5.5":[5,4],
+						"Button 5.6":[5,5],
+						"Button 5.7":[5,6],
+						"Button 5.8":[5,7],
+
+						"Button 6.1":[6,0],
+						"Button 6.2":[6,1],
+						"Button 6.3":[6,2],
+						"Button 6.4":[6,3],
+						"Button 6.5":[6,4],
+						"Button 6.6":[6,5],
+						"Button 6.7":[6,6],
+						"Button 6.8":[6,7],
+
+						"Button 7.1":[7,0],
+						"Button 7.2":[7,1],
+						"Button 7.3":[7,2],
+						"Button 7.4":[7,3],
+						"Button 7.5":[7,4],
+						"Button 7.6":[7,5],
+						"Button 7.7":[7,6],
+						"Button 7.8":[7,7],
+
+						"Button 8.1":[8,0],
+						"Button 8.2":[8,1],
+						"Button 8.3":[8,2],
+						"Button 8.4":[8,3],
+						"Button 8.5":[8,4],
+						"Button 8.6":[8,5],
+						"Button 8.7":[8,6],
+						"Button 8.8":[8,7]
 					}
 				},
 
@@ -444,14 +530,21 @@
 		"Set Color by Index":
 		{
 			"menu":"",
-			"callback":"setPadColor",
+			"callback":"setColorByIndex",
 			"parameters":
 			{
 				"Button Index X":
 				{
 					"type":"Integer",
 					"min":0,
-					"max":63
+					"max":8
+				},
+				
+				"Button Index Y":
+				{
+					"type":"Integer",
+					"min":0,
+					"max":8
 				},
 
 				"Color":
