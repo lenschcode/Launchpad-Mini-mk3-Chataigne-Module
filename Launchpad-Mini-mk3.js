@@ -136,6 +136,22 @@ function setColorByNote(note, color, pulsing)
 	script.log("Set Button with Note "+note+" to color "); //TODO
 }
 
+
+function setPadColor(id, color, pulsing)
+{
+	var note = buttonNotes[id[0]][id[1]];
+	setColorByNote(note, color, pulsing);
+}
+
+
+function setColorByIndex(x, y, color, pulsing)
+{
+	var note = buttonNotes[y][x];
+	setColorByNote(note, color, pulsing);
+}
+
+
+
 // ---- Module Common Functions ----
 
 function init()
